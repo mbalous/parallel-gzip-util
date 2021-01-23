@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "GzipTool": {
+      "commandName": "Project",
+      "commandLineArgs": " compress \"C:\\System Volume Information\" aaa"
+    }
+  }
+}
