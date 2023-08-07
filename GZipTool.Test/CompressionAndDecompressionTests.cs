@@ -4,16 +4,16 @@ using System.IO;
 using System.Text;
 using System.Threading;
 
-namespace GzipTool.Test;
+namespace GZipTool.Test;
 
 [TestClass]
 public class CompressionAndDecompressionTests
 {
     [TestMethod]
-    [DataRow(1, false)]
-    [DataRow(1, true)]
-    [DataRow(2, false)]
-    [DataRow(2, true)]
+    [DataRow(1, false, DisplayName = "Single threaded")]
+    [DataRow(1, true, DisplayName = "Single threaded, alternative algo for decompression")]
+    [DataRow(2, false, DisplayName = "Multi threaded")]
+    [DataRow(2, true, DisplayName = "Multi threaded, alternative algo for decompression")]
     public void TestCompressionAndDecompression(int threadCount, bool useAlternativeDecompression)
     {
         const string data = "ABAB ABAB ABAB ABAB ABAB ABAB";
