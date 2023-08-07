@@ -18,12 +18,7 @@ public class ParallelFileDecompress2 : ParallelFileIO
             throw new ArgumentException("Output stream must support seeking.", nameof(output));
     }
 
-    public override void Run(CancellationToken cancellationToken = default)
-    {
-        Run(GetIdealThreadCount(_readerStream.Length), cancellationToken);
-    }
-
-    public void Run(int threads, CancellationToken cancellationToken)
+    public override void Run(int threads, CancellationToken cancellationToken)
     {
         var footer = CustomGZipFooter.FromStream(_readerStream);
 
@@ -58,10 +53,9 @@ public class ParallelFileDecompress2 : ParallelFileIO
             chunkIndex += chunkInfosInCurrentBlock.Length;
             currentBlockOffset = chunkInfosInCurrentBlock[0].CompressedStart;
 
-            int bytesRead;
             byte[] buffer = new byte[compressedChunksBlockSize];
 
-            bytesRead = _readerStream.Read(buffer, 0, (int)compressedChunksBlockSize);
+            int bytesRead = _readerStream.Read(buffer, 0, (int)compressedChunksBlockSize);
             List<CustomGZipFooter.CompressedChunkInfo>[] threadChunkAssignations
                 = new List<CustomGZipFooter.CompressedChunkInfo>[threadsForCurrentBlock];
 

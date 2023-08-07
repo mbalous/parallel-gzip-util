@@ -89,9 +89,9 @@ internal static class Program
             Console.WriteLine($"Program does not have required permissions. {ex.Message}");
             return FAILURE;
         }
-        catch (OperationCanceledException ex)
+        catch (OperationCanceledException)
         {
-            Console.WriteLine("Operation canceled by user.");
+            Console.WriteLine("Operation has been canceled.");
             return FAILURE;
         }
         catch (PathTooLongException ex)
@@ -110,7 +110,7 @@ internal static class Program
         catch (Exception ex)
         {
             // the exception message is localized, so the user should work out what went wrong
-            Console.WriteLine($"Generic exception occured: " + ex.Message);
+            Console.WriteLine("Application has encountered unhandled exception: " + ex.Message);
             return FAILURE;
         }
 

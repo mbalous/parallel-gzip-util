@@ -10,27 +10,13 @@ namespace GzipTool.Core;
 public sealed class CustomGZipFooter
 {
 	[DebuggerDisplay("{" + nameof(GetDebuggerDisplay) + "(),nq}")]
-	public sealed class CompressedChunkInfo
+	public sealed record CompressedChunkInfo
 	{
-			
 		public long OriginalStart { get; set; }
 		public long CompressedStart { get; set; }
 
 		public long OriginalLength { get; set; }
 		public long CompressedLength { get; set; }
-
-		public override bool Equals(object obj)
-		{
-			if (obj is CompressedChunkInfo other)
-			{
-				return
-					OriginalStart == other.OriginalStart &&
-					CompressedStart == other.CompressedStart &&
-					OriginalLength == other.OriginalLength &&
-					CompressedLength == other.CompressedLength;
-			}
-			return false;
-		}
 
 		internal static readonly long ChunkInfoSize = sizeof(long) * 4; // number of fields 
 

@@ -40,5 +40,11 @@ public abstract class ParallelFileIO
 		_writerStream = output;
 	}
 
-	public abstract void Run(CancellationToken cancellationToken = default);
+	public void Run(CancellationToken cancellationToken)
+	{
+		var threadCount = GetIdealThreadCount(_readerStream.Length);
+		Run(threadCount, cancellationToken);
+	}
+	
+	public abstract void Run(int threadCount, CancellationToken cancellationToken);
 }

@@ -18,17 +18,10 @@ public class ParallelFileDecompress : ParallelFileIO
 			throw new ArgumentException("Output stream must support seeking.", nameof(output));
 	}
 
-	private ConcurrentBag<CustomGZipFooter.CompressedChunkInfo> _chunkInfos;
-
-	public override void Run(CancellationToken cancellationToken = default)
-	{
-		Run(GetIdealThreadCount(_readerStream.Length), cancellationToken);
-	}
-
-	public void Run(int threads, CancellationToken cancellationToken)
+	public override void Run(int threads, CancellationToken cancellationToken)
 	{
 		var footer = CustomGZipFooter.FromStream(_readerStream);
-		_chunkInfos = new ConcurrentBag<CustomGZipFooter.CompressedChunkInfo>(footer.Chunks);
+		var chunkInfos = new ConcurrentBag<CustomGZipFooter.CompressedChunkInfo>(footer.Chunks);
 
 		List<Thread> threadList = new List<Thread>(threads);
 		using (CountdownEvent threadFinisher = new CountdownEvent(1))
@@ -38,7 +31,7 @@ public class ParallelFileDecompress : ParallelFileIO
 				var thread = new Thread((object param) =>
 				{
 					Thread.CurrentThread.Name = $"Decompress ThreadWorker: {(int)param}";
-					StartWorker();
+					StartWorker(chunkInfos);
 					threadFinisher.Signal();
 				});
 
@@ -51,9 +44,9 @@ public class ParallelFileDecompress : ParallelFileIO
 		}
 	}
 
-	private void StartWorker()
+	private void StartWorker(ConcurrentBag<CustomGZipFooter.CompressedChunkInfo> compressedChunkInfos)
 	{
-		while (_chunkInfos.TryTake(out CustomGZipFooter.CompressedChunkInfo chunkInfo))
+		while (compressedChunkInfos.TryTake(out CustomGZipFooter.CompressedChunkInfo chunkInfo))
 		{
 			byte[] buffer = new byte[chunkInfo.CompressedLength];
 			int bytesRead;

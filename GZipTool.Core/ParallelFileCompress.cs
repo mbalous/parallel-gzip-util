@@ -16,7 +16,7 @@ public class ParallelFileCompress : ParallelFileIO
 	{
 	}
 
-	public override void Run(CancellationToken cancellationToken = default)
+	public override void Run(int threadCount, CancellationToken cancellationToken = default)
 	{
 		var threads = GetIdealThreadCount(_readerStream.Length);
 
